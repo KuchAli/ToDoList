@@ -3,6 +3,8 @@
 **To Do List** adalah sistem aplikasi yang saya buat untuk kegiatan harian  
 supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari itu.
 
+<img src="src/tampilan.png" alt="tampilan" style="width:100%;">
+
 
 ## Alat 
 - **Code Editor** : Visual Studio Code
