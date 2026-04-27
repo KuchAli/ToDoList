@@ -16,7 +16,8 @@ supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari it
      git clone
      cd ToDoList
    ```
-3. **Buat Databse Baru dengan nama todolist_db lalu import file
+3. **Buat Databse Baru  
+   dengan nama todolist_db lalu import file
    todolist_db.sql**
 4. **Jalankan Aplikasi**  
    localhost/todolist/index.php
