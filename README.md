@@ -5,9 +5,9 @@ supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari it
 
 
 ## Alat 
-- **Code Editor**
-- **PHP**
-- **DBMS**
+- **Code Editor** : Visual Studio Code
+- **PHP** : PHP 8.2
+- **DBMS** : XAMPP atau Laragon
 
 ## Instalasi 
 1. **Nyalakan Server dan My SQL pada DBMD**
