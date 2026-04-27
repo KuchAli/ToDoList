@@ -1,20 +1,26 @@
 <?php
 include 'config/database.php';
 include 'includes/function.php';
-include 'includes/header.php';
 
 $page = max(1, (int)($_GET['page'] ?? 1));
 $limit = 3;
 $offset = ($page - 1) * $limit;
 
-$tanggal = $_GET['tanggal_kegiatan'] ?? '';
-
+if (isset($_GET['tanggal_kegiatan']) && $_GET['tanggal_kegiatan'] !== '') {
+    $tanggal = $_GET['tanggal_kegiatan'];
+} else {
+    $tanggal = date('Y-m-d');
+    }
+    
+            
 $result = getKegiatan($conn, $tanggal, $limit, $offset);
 $totalData = countKegiatan($conn, $tanggal);
 $totalPages = ceil($totalData / $limit);
 
 $prev = $page - 1;
 $next = $page + 1;
+
+include 'includes/header.php';
 ?>
 
 <div class="container">
@@ -24,7 +30,7 @@ $next = $page + 1;
         <div class="filter-group">
             <label for="">  Tanggal </label>
             <input type="date" name="tanggal_kegiatan" value="<?= htmlspecialchars($tanggal) ?>">
-            <button class="btn btn-dark"><i class="fas fa-filter"></i> Filter</button>
+            <button type="submit" class="btn btn-dark"><i class="fas fa-filter"></i> Filter</button>
         </div>
     </form>
 
