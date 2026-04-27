@@ -22,7 +22,9 @@ supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari it
    dengan nama todolist_db lalu import file
    todolist_db.sql**
 4. **Jalankan Aplikasi**  
+   ```bash
    localhost/todolist/index.php
+   ```
 
 ## Lisensi
 
