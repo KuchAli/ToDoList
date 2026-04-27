@@ -13,7 +13,7 @@ supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari it
 1. **Nyalakan Server dan My SQL pada DBMD**
 2. **Clone Repository / Download ZIP**
    ```bash
-     git clone
+     git clone https://github.com/KuchAli/ToDoList.git
      cd ToDoList
    ```
 3. **Buat Databse Baru  
