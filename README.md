@@ -18,8 +18,8 @@ supaya kita bisa tau daftar kegiatan apa saja yang mau kita lakukan pada hari it
    ```
 3. **Buat Databse Baru dengan nama todolist_db lalu import file
    todolist_db.sql**
-4. **Jalankan Aplikasi**
-   localhot/todolist/index.php
+4. **Jalankan Aplikasi**  
+   localhost/todolist/index.php
 
 ## Lisensi
 
