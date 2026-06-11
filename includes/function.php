@@ -74,20 +74,6 @@ class SupabaseResult {
     }
 }
 
-// Compatibility function for mysqli_num_rows
-function mysqli_num_rows($result) {
-    if ($result instanceof SupabaseResult) {
-        return $result->num_rows();
-    }
-    return 0;
-}
 
-// Compatibility function for mysqli_fetch_array
-function mysqli_fetch_array($result) {
-    if ($result instanceof SupabaseResult) {
-        return $result->fetch_array();
-    }
-    return null;
-}
 
 ?>
