@@ -1,81 +1,93 @@
 <?php
 
-// ini saya akan buat fungsi backend sederhana untuk kegiatan
-function kegiatan($conn, $nama,$jenis,$tanggal,$status){
-    $nama = mysqli_real_escape_string($conn,trim($nama));
+// Load Supabase configuration
+require_once __DIR__ . '/../config/supabase.php';
 
-    $checkSql = "SELECT id_kegiatan FROM kegiatan WHERE nama_kegiatan = ?";
-    $checkStmt = mysqli_prepare($conn ,$checkSql);
-    mysqli_stmt_bind_param($checkStmt,"s",$nama);
-    mysqli_stmt_execute($checkStmt);
-    mysqli_stmt_store_result($checkStmt);
+// Wrapper functions untuk Supabase client
+// Format sama seperti sebelumnya, tapi menggunakan Supabase di belakangnya
 
-
-    if(mysqli_stmt_num_rows($checkStmt) > 0){
-        mysqli_stmt_close($checkStmt);
+function kegiatan($conn, $nama, $jenis, $tanggal, $status) {
+    global $supabase;
+    
+    $nama = trim($nama);
+    
+    if (empty($nama)) {
         return false;
     }
-    mysqli_stmt_close($checkStmt);
-
-    $sql="INSERT INTO kegiatan (nama_kegiatan,jenis_kegiatan,tanggal_kegiatan,status) VALUES(?,?,?,?) ";
-    $stmt =mysqli_prepare($conn,$sql);
-    mysqli_stmt_bind_param($stmt,"ssss",$nama,$jenis,$tanggal,$status);
-
-
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
-
-
+    
+    return $supabase->insertKegiatan($nama, $jenis, $tanggal, $status);
 }
 
-function updateStatus($conn,$status,$id){
-    $sql = "UPDATE kegiatan SET status=? WHERE id_kegiatan=?";
-    $stmt = mysqli_prepare($conn,$sql);
-    mysqli_stmt_bind_param($stmt, "si", $status,$id);
-
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
-}
-
-function getKegiatan($conn, $tanggal = null, $limit = 3, $offset = 0){
-
-    if(!empty($tanggal)){
-        $sql = "SELECT * FROM kegiatan 
-                WHERE tanggal_kegiatan = ? 
-                LIMIT ? OFFSET ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sii", $tanggal, $limit, $offset);
-    } else {
-        $sql = "SELECT * FROM kegiatan 
-                LIMIT ? OFFSET ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+function updateStatus($conn, $status, $id) {
+    global $supabase;
+    
+    if (empty($id) || empty($status)) {
+        return false;
     }
-
-    mysqli_stmt_execute($stmt);
-    return mysqli_stmt_get_result($stmt);
+    
+    return $supabase->updateStatusKegiatan($id, $status);
 }
 
-function countKegiatan($conn, $tanggal = null){
-
-    if(!empty($tanggal)){
-        $sql = "SELECT COUNT(*) as total FROM kegiatan WHERE tanggal_kegiatan = ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $tanggal);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-    } else {
-        $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM kegiatan");
+function getKegiatan($conn, $tanggal = null, $limit = 3, $offset = 0) {
+    global $supabase;
+    
+    $data = $supabase->getKegiatan($tanggal, $limit, $offset);
+    
+    // Convert array to mysqli result-like object for compatibility
+    if (is_array($data)) {
+        return new SupabaseResult($data);
     }
-
-    $row = mysqli_fetch_assoc($result);
-    return $row['total'];
+    
+    return new SupabaseResult([]);
 }
 
+function countKegiatan($conn, $tanggal = null) {
+    global $supabase;
+    
+    return $supabase->countKegiatan($tanggal);
+}
 
+/**
+ * Wrapper class to make Supabase results compatible with mysqli_fetch_array
+ */
+class SupabaseResult {
+    private $data;
+    private $position = 0;
+    
+    public function __construct($data) {
+        $this->data = is_array($data) ? $data : [];
+    }
+    
+    public function fetch_array($result_type = MYSQLI_ASSOC) {
+        if ($this->position >= count($this->data)) {
+            return null;
+        }
+        
+        $row = $this->data[$this->position];
+        $this->position++;
+        
+        return $row;
+    }
+    
+    public function num_rows() {
+        return count($this->data);
+    }
+}
+
+// Compatibility function for mysqli_num_rows
+function mysqli_num_rows($result) {
+    if ($result instanceof SupabaseResult) {
+        return $result->num_rows();
+    }
+    return 0;
+}
+
+// Compatibility function for mysqli_fetch_array
+function mysqli_fetch_array($result) {
+    if ($result instanceof SupabaseResult) {
+        return $result->fetch_array();
+    }
+    return null;
+}
 
 ?>

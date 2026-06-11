@@ -20,6 +20,20 @@ $totalPages = ceil($totalData / $limit);
 $prev = $page - 1;
 $next = $page + 1;
 
+// Convert SupabaseResult to array for template compatibility
+$kegiatan_data = [];
+if ($result instanceof SupabaseResult) {
+    // Get all data from result
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $kegiatan_data[] = $row;
+    }
+} else {
+    // Fallback for mysqli result (legacy support)
+    while ($row = mysqli_fetch_array($result)) {
+        $kegiatan_data[] = $row;
+    }
+}
+
 include 'includes/header.php';
 ?>
 
@@ -36,9 +50,9 @@ include 'includes/header.php';
 
     <!-- DATA -->
     <div class="row">
-        <?php if(mysqli_num_rows($result) > 0): ?>
+        <?php if(count($kegiatan_data) > 0): ?>
 
-            <?php while($data=mysqli_fetch_array($result)): ?>
+            <?php foreach($kegiatan_data as $data): ?>
                 
                 <div class="col-md-4 mb-3">
                     <div class="card h-100">
@@ -68,7 +82,7 @@ include 'includes/header.php';
                     </div>
                 </div>
 
-            <?php endwhile; ?>
+            <?php endforeach; ?>
 
         <?php else: ?>
             <p class="text-center text-muted">Tidak ada kegiatan</p>
